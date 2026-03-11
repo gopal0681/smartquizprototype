@@ -100,7 +100,9 @@ REST_FRAMEWORK = {
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config()
+    'default': dj_database_url.parse(
+        os.environ.get('DATABASE_URL', 'postgresql://localhost/smartquiz')
+    )
 }
 
 
