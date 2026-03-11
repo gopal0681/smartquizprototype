@@ -1,0 +1,56 @@
+.dashboard {
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f4f6f9;
+  padding-bottom: 100px;
+  position: sticky;
+  display: flex;
+  margin-right: 50px;
+}
+
+.main-content {
+  justify-content: center;   
+  padding-bottom: 80px;
+  flex: 1;
+}
+
+.sidebar {
+  position: fixed;
+  top: 70px;              
+  left: 0;
+  width: 200px;
+  height: calc(100vh - 70px);
+  background: linear-gradient(180deg, #10B981, #047857);
+  color: white;
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h3 {
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 15px 0;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #111827;
+  padding: 12px 15px;
+  display: block;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.sidebar ul li a:hover {
+  background: linear-gradient(360deg, #4ADE80, #16A34A);
+  color: white;
+}
+
