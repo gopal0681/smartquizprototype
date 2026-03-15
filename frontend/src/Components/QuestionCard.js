@@ -28,6 +28,36 @@ function QuestionCard() {
 
     fetchQuiz();
   }, [topic]);
+  
+  const handleSubmit = async () => {
+    let score = 0;
+
+    questions.forEach((q) => {
+      if (answers[q.id] === q.correct_answer) {
+        score++;
+      }
+    });
+
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/submit-quiz/`,
+        {
+          topic: topic,
+          score: score,
+          total: questions.length
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`
+          }
+        }
+      );
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error submitting quiz:", error);
+      alert("Failed to submit quiz. Please try again.");
+    }
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -95,7 +125,6 @@ function QuestionCard() {
           </div>
         </div>
 
-        {/* Navigation */}
         <div className="navigation">
           {current > 0 && (
             <button
@@ -114,7 +143,9 @@ function QuestionCard() {
               Next
             </button>
           ) : (
-            <button className="nav-btn submit">Submit Quiz</button>
+            <button className="nav-btn submit" onClick={handleSubmit}>
+              Submit Quiz
+            </button>
           )}
         </div>
 
