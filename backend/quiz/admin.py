@@ -26,42 +26,29 @@ class QuestionAdmin(admin.ModelAdmin):
 
             data = request.POST.get("questions")
 
-            lines = [line.strip() for line in data.split("\n") if line.strip()]
+            lines = [l.strip() for l in data.split("\n") if l.strip()]
 
-            i = 0
+            for i in range(0, len(lines), 6):
 
-            while i < len(lines):
+                block = lines[i:i+6]
 
-                if re.match(r'^(Q?\d+\.)', lines[i]):
-                    i += 1
+                if len(block) < 6:
                     continue
 
-                question_lines = []
+                question_text = block[0]
+                option_a = block[1]
+                option_b = block[2]
+                option_c = block[3]
+                option_d = block[4]
 
-                while i < len(lines) and not re.match(r'^\d+\.', lines[i]):
-                    question_lines.append(lines[i])
-                    i += 1
+                correct_line = block[5].upper()
 
-                question_text = " ".join(question_lines)
+                match = re.search(r'[ABCD]', correct_line)
 
-                if i + 4 >= len(lines):
-                    break
-
-                option_a = lines[i]
-                option_b = lines[i+1]
-                option_c = lines[i+2]
-                option_d = lines[i+3]
-
-                correct_line = lines[i+4].strip().upper()
-
-                match = re.search(r'[ABCD]$', correct_line)
-
-                if match:
-                    correct = match.group()
-                else:
-                    print("Skipping invalid question:", question_text)
-                    i += 5
+                if not match:
                     continue
+
+                correct = match.group()
 
                 Question.objects.create(
                     topic=topic,
@@ -72,8 +59,6 @@ class QuestionAdmin(admin.ModelAdmin):
                     option_d=option_d,
                     correct_answer=correct
                 )
-
-                i += 5
 
             return redirect("../")
 
