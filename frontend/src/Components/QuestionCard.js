@@ -39,8 +39,7 @@ function QuestionCard() {
     });
 
     try {
-      await axios.post(
-        `${process.env.REACT_APP_API_URL}/submit-quiz/`,
+      await axios.post(`${process.env.REACT_APP_API_URL}/submit-quiz/${topic}/`,
         {
           topic: topic,
           score: score,

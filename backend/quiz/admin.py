@@ -26,22 +26,19 @@ class QuestionAdmin(admin.ModelAdmin):
 
             data = request.POST.get("questions")
 
-            # split lines and remove empty lines
             lines = [line.strip() for line in data.split("\n") if line.strip()]
 
             i = 0
 
             while i < len(lines):
 
-                # skip Q1, Q2 etc
-                if re.match(r'^Q\d+', lines[i]):
+                if re.match(r'^(Q?\d+\.)', lines[i]):
                     i += 1
                     continue
 
-                # collect question text (multi-line supported)
                 question_lines = []
 
-                while i < len(lines) and not re.match(r'^\d', lines[i]):
+                while i < len(lines) and not re.match(r'^\d+\.', lines[i]):
                     question_lines.append(lines[i])
                     i += 1
 
@@ -57,7 +54,6 @@ class QuestionAdmin(admin.ModelAdmin):
 
                 correct_line = lines[i+4].strip().upper()
 
-                # extract answer letter
                 match = re.search(r'[ABCD]$', correct_line)
 
                 if match:

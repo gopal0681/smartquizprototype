@@ -21,6 +21,9 @@ cloudinary.config(
     api_secret="_pCVlhVMy90WHOZM6o6pYghJhkI"
 )
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
+FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
