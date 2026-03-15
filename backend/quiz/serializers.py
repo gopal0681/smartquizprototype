@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Question
+from .models import Question , Topic
 
 class RegisterSerializer(serializers.ModelSerializer):
 
@@ -25,16 +25,21 @@ class RegisterSerializer(serializers.ModelSerializer):
     
 
 class QuestionSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = Question 
-        fields = ['id','question_text','option_a','option_b','option_c','option_d']
-        extra_kwargs = {'correct_answer' : {'write_only' : True }}
+        model = Question
+        fields = [
+            "id",
+            "question_text",
+            "option_a",
+            "option_b",
+            "option_c",
+            "option_d",
+            "correct_answer",
+            "topic"
+        ]
 
-class PdfUploadSerializer(serializers.Serializer):
-    topic = serializers.CharField()
-    file = serializers.FileField()
-
-    def validate_file(self, value):
-        if not value.name.endswith('.pdf'):
-            raise serializers.ValidationError("Only PDF files are allowed")
-        return value
+class TopicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Topic
+        fields = ['id', 'title']

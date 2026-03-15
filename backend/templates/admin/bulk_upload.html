@@ -1,0 +1,22 @@
+<h2>Bulk Upload Questions</h2>
+
+<form method="post">
+{% csrf_token %}
+
+<label>Select Topic</label>
+<select name="topic">
+{% for t in topics %}
+<option value="{{t.id}}">{{t.title}}</option>
+{% endfor %}
+</select>
+
+<br><br>
+
+<textarea name="questions" rows="20" cols="100"
+placeholder="Paste questions here"></textarea>
+
+<br><br>
+
+<button type="submit">Upload Questions</button>
+
+</form>

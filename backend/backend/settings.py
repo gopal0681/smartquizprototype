@@ -13,7 +13,13 @@ import os
 from pathlib import Path
 from datetime import timedelta
 import dj_database_url
+import cloudinary
 
+cloudinary.config(
+    cloud_name="dwjhgwmkp",
+    api_key="491327979376465",
+    api_secret="_pCVlhVMy90WHOZM6o6pYghJhkI"
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,9 +34,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 SECRET_KEY = 'django-insecure-a38p%)9u_@^8om!9*x9^*^0x%crelk=dq(*b5&yy!g3g7t+o*8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+DEBUG = "True"
 
-ALLOWED_HOSTS = ["smartquizprototype-backend.onrender.com"]
+ALLOWED_HOSTS = ["smartquizprototype-backend.onrender.com", "127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -42,10 +48,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
+    'cloudinary_storage',
     'rest_framework',
     'corsheaders',
     'quiz',
 ]
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -72,25 +82,27 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://smartquizprototype-frontend.onrender.com",
+    "https://smartquizprototype-frontend.onrender.com", "http://localhost:3000",
 ]
+
 CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
+{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [BASE_DIR / "templates"],
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'context_processors': [
+            'django.template.context_processors.debug',
+            'django.template.context_processors.request',
+            'django.contrib.auth.context_processors.auth',
+            'django.contrib.messages.context_processors.messages',
+        ],
     },
+},
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'

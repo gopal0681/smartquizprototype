@@ -1,106 +1,90 @@
 from django.contrib import admin
-from django.shortcuts import render, redirect
 from django.urls import path
-import pdfplumber
-from .models import Question , UploadedPDF
-from django.utils.html import format_html
+from django.shortcuts import render, redirect
+from .models import Question, Topic
+import re
+
 
 class QuestionAdmin(admin.ModelAdmin):
 
-    change_list_template = "admin/question_upload.html"
+    change_list_template = "admin/questions_changelist.html"
 
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            path("uploadpdf/", self.upload_pdf, name="question-upload-pdf"),
+            path("bulk-upload/", self.bulk_upload)
         ]
         return custom_urls + urls
 
 
-    def upload_pdf(self, request):
+    def bulk_upload(self, request):
 
         if request.method == "POST":
 
-            pdf_file = request.FILES.get("pdf_file")
-            topic = request.POST.get("topic")
+            topic_id = request.POST.get("topic")
+            topic = Topic.objects.get(id=topic_id)
 
-            if not pdf_file or not topic:
-                self.message_user(request, "Please provide both topic and PDF file.")
-                return redirect(request.path)
-            
-            UploadedPDF.objects.create(
-                topic=topic,
-                pdf_file=pdf_file
-            )
+            data = request.POST.get("questions")
 
-            pdf_file.seek(0)
+            # split lines and remove empty lines
+            lines = [line.strip() for line in data.split("\n") if line.strip()]
 
-            with pdfplumber.open(pdf_file) as pdf:
+            i = 0
 
-                text = ""
+            while i < len(lines):
 
-                for page in pdf.pages:
-                    text += page.extract_text() + "\n"
-
-            lines = text.split("\n")
-
-            question = None
-            options = []
-
-            for line in lines:
-
-                line = line.strip()
-
-                if not line:
+                # skip Q1, Q2 etc
+                if re.match(r'^Q\d+', lines[i]):
+                    i += 1
                     continue
 
-                if line.startswith("Q"):
-                    question = line
-                    options = []
+                # collect question text (multi-line supported)
+                question_lines = []
 
-                elif line.startswith("A)", "B)", "C)", "D)"):
-                    options.append(line[2:].strip())
+                while i < len(lines) and not re.match(r'^\d', lines[i]):
+                    question_lines.append(lines[i])
+                    i += 1
 
-                elif line.startswith("Answer:"):
+                question_text = " ".join(question_lines)
 
-                    correct = line.split(":")[1].strip()
+                if i + 4 >= len(lines):
+                    break
 
-                    if question and len(options) == 4:
+                option_a = lines[i]
+                option_b = lines[i+1]
+                option_c = lines[i+2]
+                option_d = lines[i+3]
 
-                        Question.objects.create(
-                            topic=topic,
-                            question_text=question,
-                            option_a=options[0],
-                            option_b=options[1],
-                            option_c=options[2],
-                            option_d=options[3],
-                            correct_answer=correct
-                        )
+                correct_line = lines[i+4].strip().upper()
 
-                    options = []
+                # extract answer letter
+                match = re.search(r'[ABCD]$', correct_line)
 
-            self.message_user(request, "Questions uploaded successfully!")
+                if match:
+                    correct = match.group()
+                else:
+                    print("Skipping invalid question:", question_text)
+                    i += 5
+                    continue
 
-            return redirect("..")
+                Question.objects.create(
+                    topic=topic,
+                    question_text=question_text,
+                    option_a=option_a,
+                    option_b=option_b,
+                    option_c=option_c,
+                    option_d=option_d,
+                    correct_answer=correct
+                )
 
-        return render(request, "admin/question_upload.html")
+                i += 5
 
+            return redirect("../")
 
-class UploadedPDFAdmin(admin.ModelAdmin):
+        topics = Topic.objects.all()
 
-    list_display = ("topic", "view_pdf")
+        return render(request, "admin/bulk_upload.html", {"topics": topics})
 
-    def view_pdf(self, obj):
-
-        if obj.pdf_file:
-            return format_html(
-                '<a href="{}" target="_blank">View PDF</a>',
-                obj.pdf_file.url
-            )
-
-        return "No PDF"
-
-    view_pdf.short_description = "PDF"
 
 admin.site.register(Question, QuestionAdmin)
-admin.site.register(UploadedPDF, UploadedPDFAdmin)
+admin.site.register(Topic)
