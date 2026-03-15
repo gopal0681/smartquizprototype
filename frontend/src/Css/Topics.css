@@ -58,14 +58,23 @@
 }
 
 .topic-list li{
-    padding:10px;
-    border-radius:6px;
-    cursor:pointer;
-    transition:0.2s;
+  padding:10px;
+  cursor:pointer;
+  transition:0.2s;
 }
 
 .topic-list li:hover{
-    background:#0f9d7a;
-    color: white;
-    transform:translateX(4px);
+  background:#1f9d73;
+  color:white;
+}
+
+.disabled-topic{
+  color:#777;
+  cursor:default;
+  pointer-events:none;
+}
+
+.disabled-topic:hover{
+  background:none;
+  color:#777;
 }

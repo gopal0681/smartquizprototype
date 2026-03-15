@@ -7,65 +7,65 @@ function Topics() {
   const navigate = useNavigate();
   
   const quant = [
-    {name:"Percentages", path:"percentages"},
-    {name:"Ratio & Proportion", path:"ratio"},
-    {name:"Profit, Loss and Partnership", path:"profitloss"},
-    {name:"Averages, Mixture and Alligations", path:"averages"},
-    {name:"Time and Work", path:"timework"},
-    {name:"Time, Speed and Distance", path:"speed"},
-    {name:"Simple and Compound Interest", path:"interest"},
-    {name:"Number System", path:"numbersystem"},
-    {name:"Simplification", path:"simplification"},
-    {name:"Algebra", path:"algebra"},
-    {name:"Problem on Ages", path:"ages"},
-    {name:"Permutation & Combination", path:"permutation"},
-    {name:"Probability", path:"probability"},
-    {name:"Mensuration", path:"mensuration"},
-    {name:"Geometry", path:"geometry"},
-    {name:"Data Interpretation", path:"datainterpretation"},
-    {name:"Statistics", path:"statistics"},
-    {name:"Trigonometry", path:"trigonometry"},
-    {name:"Mathematical Inequalities", path:"inequalities"}
+    {name:"Number System", path:"numbersystem", available:true}, 
+    {name:"Problem on Ages", path:"ages",available:true},   
+    {name:"Probability", path:"probability", available:true},    
+    {name:"Time and Work", path:"timework", available:true},
+    {name:"Time, Speed and Distance", path:"speed", available:true},
+    {name:"Averages, Mixture and Alligations", path:"averages", available:false},
+    {name:"Simple and Compound Interest", path:"interest", available:false},
+    {name:"Percentages", path:"percentages", available:false},
+    {name:"Simplification", path:"simplification", available:false},
+    {name:"Algebra", path:"algebra", available:false},
+    {name:"Profit, Loss and Partnership", path:"profitloss", available:false},
+    {name:"Ratio & Proportion", path:"ratio", available:false},   
+    {name:"Permutation & Combination", path:"permutation", available:false},
+    {name:"Mensuration", path:"mensuration", available:false},
+    {name:"Geometry", path:"geometry", available:false},
+    {name:"Data Interpretation", path:"datainterpretation", available:false},
+    {name:"Statistics", path:"statistics", available:false},
+    {name:"Trigonometry", path:"trigonometry", available:false},
+    {name:"Mathematical Inequalities", path:"inequalities", available:false}
   ];
 
   const reasoning = [
-    {name:"AlphaNumeric Series", path:"alphanumeric"},
-    {name:"Blood Relations", path:"bloodrelations"},
-    {name:"Coding Decoding", path:"coding"},
-    {name:"Data Sufficiency", path:"datasufficiency"},
-    {name:"Direction Sense", path:"direction"},
-    {name:"Mirror Images", path:"mirror"},
-    {name:"Number Series", path:"numberseries"},
-    {name:"Statement & Conclusion", path:"statementconclusion"},
-    {name:"Syllogism", path:"syllogism"},
-    {name:"Seating Arrangement", path:"seating"},
-    {name:"Calendar and Clocks", path:"calendar"},
-    {name:"Decision Making", path:"decision"},
-    {name:"Order and Ranking", path:"ranking"},
-    {name:"Patterns", path:"patterns"},
-    {name:"Verbal Reasoning", path:"verbalreasoning"},
-    {name:"Input Output", path:"inputoutput"},
-    {name:"Visual Reasoning", path:"visual"},
-    {name:"Puzzles", path:"puzzles"}
+    {name:"AlphaNumeric Series", path:"alphanumeric", available:true},
+    {name:"Blood Relations", path:"bloodrelations", available:true},
+    {name:"Coding Decoding", path:"coding", available:true},
+    {name:"Data Sufficiency", path:"datasufficiency", available:true},
+    {name:"Direction Sense", path:"direction", available:true},
+    {name:"Mirror Images", path:"mirror", available:false},
+    {name:"Number Series", path:"numberseries", available:false},
+    {name:"Statement & Conclusion", path:"statementconclusion", available:false},
+    {name:"Syllogism", path:"syllogism", available:false},
+    {name:"Seating Arrangement", path:"seating", available:false},
+    {name:"Calendar and Clocks", path:"calendar", available:false},
+    {name:"Decision Making", path:"decision", available:false},
+    {name:"Order and Ranking", path:"ranking", available:false},
+    {name:"Patterns", path:"patterns", available:false},
+    {name:"Verbal Reasoning", path:"verbalreasoning", available:false},
+    {name:"Input Output", path:"inputoutput", available:false},
+    {name:"Visual Reasoning", path:"visual", available:false},
+    {name:"Puzzles", path:"puzzles", available:false}
   ];
 
   const verbal = [
-    {name:"Synonym Antonym", path:"synonym"},
-    {name:"Fill in the blanks", path:"fillblanks"},
-    {name:"Find Error", path:"finderror"},
-    {name:"Verbal Analogies", path:"analogies"},
-    {name:"Sentence Correction", path:"sentence"},
-    {name:"Reading Comprehension", path:"reading"},
-    {name:"Parajumbles", path:"parajumbles"},
-    {name:"Direct Indirect Speech", path:"speech"},
-    {name:"Meanings", path:"meanings"},
-    {name:"Cloze Test", path:"cloze"},
-    {name:"Idioms & Phrases", path:"idioms"},
-    {name:"Critical Reasoning", path:"critical"},
-    {name:"Alphabet or Word Test", path:"alphabet"},
-    {name:"One Word Substitution", path:"oneword"},
-    {name:"Active & Passive Voice", path:"activepassive"},
-    {name:"Spelling", path:"spelling"}
+    {name:"Synonym Antonym", path:"synonym", available:true},
+    {name:"Fill in the blanks", path:"fillblanks", available:true},
+    {name:"Find Error", path:"finderror", available:true},
+    {name:"Verbal Analogies", path:"analogies", available:true},
+    {name:"Sentence Correction", path:"sentence", available:true},
+    {name:"Reading Comprehension", path:"reading", available:false},
+    {name:"Parajumbles", path:"parajumbles", available:false},
+    {name:"Direct Indirect Speech", path:"speech", available:false},
+    {name:"Meanings", path:"meanings", available:false},
+    {name:"Cloze Test", path:"cloze", available:false},
+    {name:"Idioms & Phrases", path:"idioms", available:false},
+    {name:"Critical Reasoning", path:"critical", available:false},
+    {name:"Alphabet or Word Test", path:"alphabet", available:false},
+    {name:"One Word Substitution", path:"oneword", available:false},
+    {name:"Active & Passive Voice", path:"activepassive", available:false},
+    {name:"Spelling", path:"spelling",available:false}
   ];
 
 
@@ -74,7 +74,12 @@ function Topics() {
       {topics.map((topic,index)=>(
         <li
           key={index}
-          onClick={()=>navigate(`/quiz/${topic.path}`)}
+          className={!topic.available ? "disabled-topic" : ""}
+          onClick={() => {
+            if(topic.available){
+              navigate(`/quiz/${topic.path}`)
+            }
+          }}
         >
           {index+1}. {topic.name}
         </li>
