@@ -31,10 +31,16 @@ function Dashboard() {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`
           }
         });
-        setData(res.data);
+        setData({
+          total_quizzes: res.data.total_quizzes || 0,
+          total_attempts: res.data.total_attempts || 0,
+          average_score: res.data.average_score || 0,
+          highest_score: res.data.highest_score || 0,
+          leaderboard: res.data.leaderboard || []
+        });
+
       } catch (err) {
         console.error("Failed to fetch dashboard data:", err);
-        // Defaults remain if API call fails
       }
     };
 
