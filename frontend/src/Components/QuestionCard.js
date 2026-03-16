@@ -35,7 +35,7 @@ const handleSubmit = async () => {
   }
 
   try {
-    const res = await axios.post(
+    await axios.post(
       `${process.env.REACT_APP_API_URL}/submit-quiz/${topic}/`,
       {
         answers: Object.entries(answers).map(([question_id, selected]) => ({
@@ -50,9 +50,6 @@ const handleSubmit = async () => {
         }
       }
     );
-
-    console.log("Score submitted:", res.data.score);
-    alert(`Quiz submitted! You scored ${res.data.score} out of ${res.data.total}`);
     navigate("/dashboard");
 
     } catch (error) {

@@ -4,7 +4,7 @@
   padding-bottom: 100px;
   position: sticky;
   display: flex;
-  margin-right: 50px;
+  margin-right: 30px;
 }
 
 .main-content {
@@ -17,7 +17,7 @@
   position: fixed;
   top: 70px;              
   left: 0;
-  width: 200px;
+  width: 180px;
   height: calc(100vh - 70px);
   background: linear-gradient(180deg, #10B981, #047857);
   color: white;

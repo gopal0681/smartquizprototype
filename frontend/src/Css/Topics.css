@@ -2,7 +2,8 @@
     max-width:1200px;
     margin:auto;
     padding: 25px;
-    justify-content: center;
+    margin-left: -40px; 
+    gap: 20px;
 }
 
 .main-title{
@@ -14,11 +15,11 @@
   padding: 10px 40px;
   color: black;
   text-align: center;
-  font-size: 25px;  
+  font-size: 20px;  
 }
 
 .topics-container h2{
-  font-size: 20px;
+  font-size: 15px;
   margin-bottom: 20px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -26,7 +27,7 @@
 }
 
 .topics-container p{
-  font-size: 15px;
+  font-size: 13px;
   line-height: 1.7;
   margin-bottom: 30px;
   letter-spacing: 1.5px;
@@ -34,19 +35,21 @@
 }
 
 .topics-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-    gap:30px;
+    display: flex;
+    grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
+    gap:20px;
 }
 
 .topic-card{
     background:white;
     border-radius:10px;
+    width: 250px;
     padding:25px;
     box-shadow:0 5px 20px rgba(0,0,0,0.08);
 }
 
 .topic-card h2{
+    font-size: 15px;
     margin-bottom:15px;
     border-bottom:2px solid #eee;
     padding-bottom:8px;
@@ -58,6 +61,7 @@
 }
 
 .topic-list li{
+  font-size: 15px;
   padding:10px;
   cursor:pointer;
   transition:0.2s;
