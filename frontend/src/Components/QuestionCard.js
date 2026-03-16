@@ -25,28 +25,22 @@ function QuestionCard() {
         setLoading(false);
       }
     };
-
     fetchQuiz();
   }, [topic]);
   
   const handleSubmit = async () => {
-    let score = 0;
-
-    questions.forEach((q) => {
-      if (answers[q.id] === q.correct_answer) {
-        score++;
-      }
-    });
-
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/submit-quiz/${topic}/`,
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/submit-quiz/${topic}/`,
         {
-          topic: topic,
-          score: score,
-          total: questions.length
+          answers: Object.entries(answers).map(([question_id, selected]) => ({
+            question_id: question_id,
+            selected: selected,
+          })),
         },
         {
           headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem("access_token")}`
           }
         }

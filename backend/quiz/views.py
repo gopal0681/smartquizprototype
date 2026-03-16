@@ -1,13 +1,13 @@
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser , JSONParser
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework import status
 from django.contrib.auth.models import User
 from django.contrib.auth import logout as auth_logout
-from django.db.models import Max
+from django.db.models import Max,Avg
 from django.http import HttpResponse
 from .serializers import RegisterSerializer, QuestionSerializer
 from .models import Quiz, Attempt, Question, Topic
@@ -126,9 +126,11 @@ class QuestionList(ListAPIView):
 
 
 @api_view(['POST'])
-@parser_classes([MultiPartParser, FormParser])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser, JSONParser])
 def submit_quiz(request, topic):
     answers = request.data["answers"]
+    user = request.user
     score = 0
 
     for answer in answers:
@@ -136,6 +138,8 @@ def submit_quiz(request, topic):
         if question.correct_answer == answer["selected"]:
             score += 1
 
+    Attempt.objects.create(user=user, quiz=Quiz.objects.get(topic=topic), score=score)
+    
     return Response({
         "score": score,
         "total": len(answers)
