@@ -14,7 +14,7 @@ import './App.css';
 function Layout() {
   const location = useLocation();
 
-  const hideSidebarRoutes = ["/login", "/signup"];
+  const hideSidebarRoutes = ["/login", "/signup", "/"];
   const hideSidebar = hideSidebarRoutes.includes(location.pathname);
 
   return (
@@ -26,7 +26,7 @@ function Layout() {
 
         <div className="main-content">
           <Routes>
-            <Route path="/" element={<Topics />} />
+            <Route path="/" element={<Login/>} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />

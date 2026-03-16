@@ -27,22 +27,34 @@ def register(request):
 @permission_classes([IsAuthenticated])
 def dashboard(request):
     user = request.user
+
     total_quizzes = Quiz.objects.count()
     total_attempts = Attempt.objects.filter(user=user).count()
-    highest_score = Attempt.objects.filter(user=user).aggregate(Max('score'))['score__max']
-    recent_attempts = Attempt.objects.filter(user=user).order_by('-attempted_at')[:5]
+
+    highest_score = Attempt.objects.filter(user=user).aggregate(
+        Max('score')
+    )['score__max'] or 0
+
+    average_score = Attempt.objects.filter(user=user).aggregate(
+        Avg('score')
+    )['score__avg'] or 0
+
+    leaderboard = Attempt.objects.order_by('-score')[:10]
+
+    leaderboard_data = [
+        {
+            "username": attempt.user.username,
+            "score": attempt.score
+        }
+        for attempt in leaderboard
+    ]
 
     return Response({
         "total_quizzes": total_quizzes,
         "total_attempts": total_attempts,
+        "average_score": round(average_score, 2),
         "highest_score": highest_score,
-        "recent_attempts": [
-            {
-                "quiz_title": attempt.quiz.title,
-                "score": attempt.score,
-                "attempted_at": attempt.attempted_at
-            } for attempt in recent_attempts
-        ]
+        "leaderboard": leaderboard_data
     })
 
 
