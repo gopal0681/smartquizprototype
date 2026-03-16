@@ -15,7 +15,6 @@ function SignUp() {
     const validatePassword = (password) => {
         const regex =
             /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$/;
-
         return regex.test(password);
     }
 
@@ -57,19 +56,35 @@ const handleSignup = async (e) => {
                         <h2>Sign Up</h2>    
                         <div className="form-group">
                             <label htmlFor="email" className="form-label">Email</label>  
-                            <input type="text" className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                            <input type="text" className="form-control" id="email" 
+                                autoComplete="email"
+                                placeholder="Enter your Email"
+                                value={email}                                 
+                                onChange={(e) => setEmail(e.target.value)} required />
                         </div>
                         <div className="form-group">
                             <label htmlFor="username" className="form-label">Username</label>  
-                            <input type="text" className="form-control" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                            <input type="text" className="form-control" id="username" 
+                                autoComplete="new-username"
+                                placeholder="Choose a username"
+                                value={username} 
+                                onChange={(e) => setUsername(e.target.value)} required />
                         </div>
                         <div className="form-group">
                             <label htmlFor="password" className="form-label">Password</label>
-                            <input type="password" className="form-control" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                            <input type="password" className="form-control" id="password" 
+                                autoComplete="new-password"
+                                placeholder="Choose a password"
+                                value={password} 
+                                onChange={(e) => setPassword(e.target.value)} required />
                         </div>
                         <div className="form-group">
                             <label htmlFor="password" className="form-label"> Confirm Password</label>
-                            <input type="password" className="form-control" id="confirmpassword" value={confirmpassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                            <input type="password" className="form-control" id="confirmpassword"
+                                autoComplete="new-password"
+                                placeholder="Confirm your password"
+                                value={confirmpassword} 
+                                onChange={(e) => setConfirmPassword(e.target.value)} required />
                         </div>
                                 
                         {error && <p style={{ color: "red" }}>{error}</p>}
