@@ -124,28 +124,6 @@ class QuestionList(ListAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-@parser_classes([MultiPartParser, FormParser, JSONParser])
-def submit_quiz(request, topic):
-    answers = request.data["answers"]
-    user = request.user
-    score = 0
-
-    for answer in answers:
-        question = Question.objects.get(id=answer["question_id"])
-        if question.correct_answer == answer["selected"]:
-            score += 1
-
-    Attempt.objects.create(user=user, quiz=Quiz.objects.get(topic=topic), score=score)
-    
-    return Response({
-        "score": score,
-        "total": len(answers)
-    })
-
-
 class StartQuiz(APIView):
 
     def get(self, request, topic_name):
@@ -168,3 +146,31 @@ class StartQuiz(APIView):
             "message": "Success",
             "questions": serializer.data
         })
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser, JSONParser])
+def submit_quiz(request, topic):
+    user = request.user
+    answers = request.data.get("answers", [])
+    score = 0
+
+    for answer in answers:
+        try:
+            question = Question.objects.get(id=answer["question_id"])
+            if question.correct_answer == answer["selected"]:
+                score += 1
+        except Question.DoesNotExist:
+            continue  
+
+    try:
+        quiz = Quiz.objects.get(topic=topic)
+    except Quiz.DoesNotExist:
+        return Response({"error": "Quiz not found"}, status=404)
+
+    Attempt.objects.create(user=user, quiz=quiz, score=score)
+
+    return Response({
+        "score": score,
+        "total": len(answers)
+    })
