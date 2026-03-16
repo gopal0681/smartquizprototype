@@ -16,11 +16,11 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Le
 
 function Dashboard() {
   const [data, setData] = useState({
-    total_quizzes: res.data.total_quizzes || 0,
-    total_attempts: res.data.total_attempts || 0,
-    average_score: res.data.average_score || 0,
-    highest_score: res.data.highest_score || 0,
-    leaderboard: res.data.leaderboard || []
+    total_quizzes: 0,
+    total_attempts: 0,
+    average_score: 0,
+    highest_score: 0,
+    leaderboard: []
   });
 
   useEffect(() => {
@@ -31,6 +31,7 @@ function Dashboard() {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`
           }
         });
+
         setData({
           total_quizzes: res.data.total_quizzes || 0,
           total_attempts: res.data.total_attempts || 0,
