@@ -151,24 +151,18 @@ class StartQuiz(APIView):
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FormParser, JSONParser])
 def submit_quiz(request, topic):
-    user = request.user
     answers = request.data.get("answers", [])
     score = 0
 
     for answer in answers:
+        question_id = answer.get("question_id")
+        selected = answer.get("selected")
         try:
-            question = Question.objects.get(id=answer["question_id"])
-            if question.correct_answer == answer["selected"]:
+            question = Question.objects.get(id=question_id)
+            if question.correct_answer == selected:
                 score += 1
         except Question.DoesNotExist:
-            continue  
-
-    try:
-        quiz = Quiz.objects.get(topic=topic)
-    except Quiz.DoesNotExist:
-        return Response({"error": "Quiz not found"}, status=404)
-
-    Attempt.objects.create(user=user, quiz=quiz, score=score)
+            continue
 
     return Response({
         "score": score,

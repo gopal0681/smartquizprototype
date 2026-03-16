@@ -28,26 +28,35 @@ function QuestionCard() {
     fetchQuiz();
   }, [topic]);
   
-  const handleSubmit = async () => {
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_API_URL}/submit-quiz/${topic}/`,
-        {
-          answers: Object.entries(answers).map(([question_id, selected]) => ({
-            question_id: parseInt(question_id),
-            selected: selected,
-          })),
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`
-          }
+const handleSubmit = async () => {
+  if (!Object.keys(answers).length) {
+    alert("Please answer at least one question before submitting!");
+    return;
+  }
+
+  try {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL}/submit-quiz/${topic}/`,
+      {
+        answers: Object.entries(answers).map(([question_id, selected]) => ({
+          question_id: parseInt(question_id),
+          selected: selected,
+        })),
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`
         }
-      );
-      navigate("/dashboard");
+      }
+    );
+
+    console.log("Score submitted:", res.data.score);
+    alert(`Quiz submitted! You scored ${res.data.score} out of ${res.data.total}`);
+    navigate("/dashboard");
+
     } catch (error) {
-      console.error("Error submitting quiz:", error);
+      console.error("Error submitting quiz:", error.response || error);
       alert("Failed to submit quiz. Please try again.");
     }
   };
