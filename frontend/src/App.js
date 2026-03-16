@@ -26,7 +26,7 @@ function Layout() {
 
         <div className="main-content">
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<Topics />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
