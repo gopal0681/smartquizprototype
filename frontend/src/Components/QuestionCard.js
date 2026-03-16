@@ -34,8 +34,8 @@ function QuestionCard() {
         `${process.env.REACT_APP_API_URL}/submit-quiz/${topic}/`,
         {
           answers: Object.entries(answers).map(([question_id, selected]) => ({
-             question_id: parseInt(question_id),
-              selected: selected,
+            question_id: parseInt(question_id),
+            selected: selected,
           })),
         },
         {
@@ -45,7 +45,6 @@ function QuestionCard() {
           }
         }
       );
-      console.log("Score submitted:", res.data.score);
       navigate("/dashboard");
     } catch (error) {
       console.error("Error submitting quiz:", error);
