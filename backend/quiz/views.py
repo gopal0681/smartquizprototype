@@ -28,25 +28,26 @@ def register(request):
 def dashboard(request):
     user = request.user
 
+    attempts = Attempt.objects.filter(user=user)
+
     total_quizzes = Quiz.objects.count()
-    total_attempts = Attempt.objects.filter(user=user).count()
+    total_attempts = attempts.count()
 
-    highest_score = Attempt.objects.filter(user=user).aggregate(
-        Max('score')
-    )['score__max'] or 0
+    highest_score = attempts.aggregate(Max('score'))['score__max'] or 0
+    average_score = attempts.aggregate(Avg('score'))['score__avg'] or 0
 
-    average_score = Attempt.objects.filter(user=user).aggregate(
-        Avg('score')
-    )['score__avg'] or 0
-
-    leaderboard = Attempt.objects.order_by('-score')[:10]
+    leaderboard = (
+        Attempt.objects.values("user__username")
+        .annotate(score=Max("score"))
+        .order_by("-score")[:10]
+    )
 
     leaderboard_data = [
         {
-            "username": attempt.user.username,
-            "score": attempt.score
+            "username": item["user__username"],
+            "score": item["score"]
         }
-        for attempt in leaderboard
+        for item in leaderboard
     ]
 
     return Response({
@@ -151,18 +152,36 @@ class StartQuiz(APIView):
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FormParser, JSONParser])
 def submit_quiz(request, topic):
+
     answers = request.data.get("answers", [])
     score = 0
 
     for answer in answers:
         question_id = answer.get("question_id")
         selected = answer.get("selected")
+
         try:
             question = Question.objects.get(id=question_id)
-            if question.correct_answer == selected:
+            correct_option = {
+                "A": question.option_a,
+                "B": question.option_b,
+                "C": question.option_c,
+                "D": question.option_d,
+            }[question.correct_answer]
+
+            if selected == correct_option:
                 score += 1
+
         except Question.DoesNotExist:
             continue
+
+    quiz, _ = Quiz.objects.get_or_create(title=topic)
+
+    Attempt.objects.create(
+        user=request.user,
+        quiz=quiz,
+        score=score
+    )
 
     return Response({
         "score": score,

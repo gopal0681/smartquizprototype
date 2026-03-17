@@ -81,7 +81,7 @@ const handleSignup = async (e) => {
                         <div className="form-group">
                             <label htmlFor="password" className="form-label"> Confirm Password</label>
                             <input type="password" className="form-control" id="confirmpassword"
-                                autoComplete="new-password"
+                                autoComplete="confirm-password"
                                 placeholder="Confirm your password"
                                 value={confirmpassword} 
                                 onChange={(e) => setConfirmPassword(e.target.value)} required />
