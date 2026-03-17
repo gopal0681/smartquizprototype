@@ -13,7 +13,7 @@ class Topic(models.Model):
     
 class Attempt(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, default=1)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     score = models.IntegerField()
     attempted_at = models.DateTimeField(auto_now_add=True)
 

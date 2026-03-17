@@ -11,7 +11,16 @@ function QuestionCard() {
   const [timeLeft, setTimeLeft] = useState(600);
   const [loading, setLoading] = useState(true);
   const [answers, setAnswers] = useState({});
+  
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
 
+    if (!token) {
+      alert("Please login first");
+      navigate("/login");
+    }
+  }, []);
+  
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
@@ -28,36 +37,44 @@ function QuestionCard() {
     fetchQuiz();
   }, [topic]);
   
-const handleSubmit = async () => {
-  if (!Object.keys(answers).length) {
-    alert("Please answer at least one question before submitting!");
-    return;
-  }
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("access_token");
 
-  try {
-    await axios.post(
-      `${process.env.REACT_APP_API_URL}/submit-quiz/${topic}/`,
-      {
-        answers: Object.entries(answers).map(([question_id, selected]) => ({
-          question_id: parseInt(question_id),
-          selected: selected,
-        })),
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`
+    console.log("TOKEN:", token);
+
+    if (!token) {
+      alert("Session expired. Please login again.");
+      navigate("/login");
+      return;
+    }
+
+    if (!Object.keys(answers).length) {
+      alert("Please answer at least one question before submitting!");
+      return;
+    }
+
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/submit-quiz/${topic}/`,
+        {
+          answers: Object.entries(answers).map(([question_id, selected]) => ({
+            question_id: parseInt(question_id),
+            selected,
+          })),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      }
-    );
-    navigate("/dashboard");
+      );
 
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error submitting quiz:", error.response || error);
       alert("Failed to submit quiz. Please try again.");
     }
   };
-
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => {

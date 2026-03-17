@@ -175,11 +175,14 @@ def submit_quiz(request, topic):
         except Question.DoesNotExist:
             continue
 
-    quiz, _ = Quiz.objects.get_or_create(title=topic)
+    quiz, _ = Topic.objects.get_or_create(title=topic)
+    
+    if not quiz:
+        return Response({"error": "Invalid topic"}, status=400)
 
     Attempt.objects.create(
         user=request.user,
-        quiz=quiz,
+        topic=quiz,
         score=score
     )
 
